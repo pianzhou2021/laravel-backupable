@@ -5,7 +5,7 @@ namespace Pianzhou\Backupable;
 use Illuminate\Support\Facades\DB;
 use LogicException;
 
-trait Massbackupable
+trait MassBackupable
 {
     use BackupableTable;
     /**
