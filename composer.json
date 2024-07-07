@@ -1,15 +1,15 @@
 {
-  "name": "pianzhou/laravel-backupable",
+  "name": "pianzhou/laravel-eloquent-backupable",
   "description": "This is laravel extension packages",
   "keywords": ["laravel", "query", "filter", "psr-3"],
-  "homepage": "https://github.com/pianzhou2021/laravel-cacheable",
+  "homepage": "https://github.com/pianzhou2021/laravel-eloquent-backupable",
   "type": "library",
   "license": "MIT",
   "authors": [
     {
       "name": "Pian Zhou",
       "email": "pianzhou2021@163.com",
-      "homepage": "https://github.com/pianzhou2021/laravel-cacheable"
+      "homepage": "https://github.com/pianzhou2021/laravel-eloquent-backupable"
     }
   ],
   "require": {
