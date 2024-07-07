@@ -1,7 +1,7 @@
 {
   "name": "pianzhou/laravel-eloquent-backupable",
   "description": "This is laravel extension packages",
-  "keywords": ["laravel", "query", "filter", "psr-3"],
+  "keywords": ["laravel", "eloquent", "backupable", "psr-3"],
   "homepage": "https://github.com/pianzhou2021/laravel-eloquent-backupable",
   "type": "library",
   "license": "MIT",

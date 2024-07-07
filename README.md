@@ -1,2 +1,2 @@
-# laravel-backupable
-laravel backupable
+# laravel-eloquent-backupable
+laravel eloquent backupable

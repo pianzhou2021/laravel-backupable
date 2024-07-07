@@ -9,11 +9,11 @@ use Pianzhou\Backupable\Console\BackupCommand;
 class ServiceProvider extends BaseServiceProvider implements DeferrableProvider
 {
     /**
-     * Bootstrap any application services.
+     * Register the service provider.
      *
      * @return void
      */
-    public function boot()
+    public function register()
     {
         $this->registerCommands();
     }
@@ -30,5 +30,17 @@ class ServiceProvider extends BaseServiceProvider implements DeferrableProvider
                 BackupCommand::class,
             ]);
         }
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return [
+            BackupCommand::class,
+        ];
     }
 }
