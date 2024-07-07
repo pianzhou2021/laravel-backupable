@@ -1,0 +1,38 @@
+{
+  "name": "pianzhou/laravel-backupable",
+  "description": "This is laravel extension packages",
+  "keywords": ["laravel", "query", "filter", "psr-3"],
+  "homepage": "https://github.com/pianzhou2021/laravel-cacheable",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pian Zhou",
+      "email": "pianzhou2021@163.com",
+      "homepage": "https://github.com/pianzhou2021/laravel-cacheable"
+    }
+  ],
+  "require": {
+    "php": ">=8.0",
+    "laravel/framework": "^9.0|^10.0|^11.0"
+  },
+  "suggest": {
+  },
+  "autoload": {
+    "psr-4": {"Pianzhou\\Backupable\\": "src/"}
+  },
+  "autoload-dev": {
+  },
+  "provide": {
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.x-dev"
+    }
+  },
+  "config": {
+    "lock": false,
+    "sort-packages": true,
+    "platform-check": false
+  }
+}
