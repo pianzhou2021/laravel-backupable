@@ -3,7 +3,7 @@
 namespace Pianzhou\Backupable\Console;
 
 use Pianzhou\Backupable\Backupable;
-use Pianzhou\Backupable\Massbackupable;
+use Pianzhou\Backupable\MassBackupable;
 use Pianzhou\Backupable\ModelsBackuped;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -158,7 +158,7 @@ class BackupCommand extends Command
     {
         $uses = class_uses_recursive($model);
 
-        return in_array(Backupable::class, $uses) || in_array(Massbackupable::class, $uses);
+        return in_array(Backupable::class, $uses) || in_array(MassBackupable::class, $uses);
     }
 
     /**
