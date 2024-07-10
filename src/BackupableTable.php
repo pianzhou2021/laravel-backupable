@@ -25,12 +25,16 @@ trait BackupableTable
     public function getBackupTable()
     {
         $originalTableName  = $this->getTable();
-        $backupTableName    = $this->backupTableName();
+        $originalBackupTableName    = $backupTableName = $this->backupTableName();
+        $index              = $this->getLastBackupTableNameIndex($backupTableName);
+        if ($index) {
+            $backupTableName    = $originalBackupTableName . '_' . $index;
+        }
 
         $needCreateTable    = true;
         if (Schema::hasTable($backupTableName)) {
-            if (!$this->isTableChanged($originalTableName, $backupTableName)) {
-                $backupTableName    = $backupTableName . '_' . ($this->getLastBackupTableNameIndex($backupTableName) + 1);
+            if ($this->isTableChanged($originalTableName, $backupTableName)) {
+                $backupTableName    = $originalBackupTableName . '_' . ($index + 1);
             } else {
                 $needCreateTable = false;
             }
@@ -54,14 +58,14 @@ trait BackupableTable
         return collect(Schema::getConnection()
             ->getDoctrineSchemaManager()
             ->listTableNames())
-        ->map(function($table) use ($backupTableName) {
-            $index = str_replace($backupTableName.'_', '' , $table);
-            if (is_numeric($index)) {
-                return $index;
-            }
-            return 0;
-        })
-        ->max();
+            ->map(function($table) use ($backupTableName) {
+                $index = str_replace($backupTableName.'_', '' , $table);
+                if (is_numeric($index)) {
+                    return $index;
+                }
+                return 0;
+            })
+            ->max();
     }
 
     /**
@@ -73,25 +77,11 @@ trait BackupableTable
      */
     function isTableChanged(string $table1, string $table2)
     {
-        $columns1 = Schema::getColumnListing($table1);
-        $columns2 = Schema::getColumnListing($table2);
-    
-        // compare columns
-        if (array_diff($columns1, $columns2) || array_diff($columns2, $columns1)) {
-            return false;
-        }
-    
-        foreach ($columns1 as $column) {
-            $type1 = Schema::getColumnType($table1, $column);
-            $type2 = Schema::getColumnType($table2, $column);
-    
-            // compare type
-            if ($type1 != $type2) {
-                return false;
-            }
-        }
-    
-        return true;
+        $sql   = 'show columns from `%s`';
+        $table1Json = collect(DB::connection()->select(sprintf($sql, $table1)))->toJson();
+        $table2Json = collect(DB::connection()->select(sprintf($sql, $table2)))->toJson();
+        
+        return $table1Json !== $table2Json;
     }
 
     /**
