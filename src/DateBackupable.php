@@ -6,7 +6,6 @@ use LogicException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Pianzhou\Backupable\ModelsBackuped;
 
 trait DateBackupable
 {
@@ -17,36 +16,23 @@ trait DateBackupable
     /**
      * Backup all backupable models in the database.
      *
-     * @param  int  $chunkSize
+     * @param int $chunkSize
      * @return int
      */
     public function backupAll(int $chunkSize = 1000)
     {
         $dates = $this->backupable()
-            ->groupBy(
-                DB::raw(
-                    'DATE_FORMAT(' . $this->getTableDateFieldName() . ",'%Y-%m')"
-                )
-            )
-            ->select(
-                DB::raw(
-                    'DATE_FORMAT(' . $this->getTableDateFieldName()
-                        . ",'%Y-%m') as date"
-                )
-            )->pluck('date');
+            ->groupBy(DB::raw('DATE_FORMAT(' . $this->getTableDateFieldName() . ",'%Y-%m')"))
+            ->select(DB::raw('DATE_FORMAT(' . $this->getTableDateFieldName() . ",'%Y-%m') as date"))
+            ->pluck('date');
         $total = $this->backupable()->count();
 
-        $backedup = 0;
-        $dates->each(function ($tableDateString) use ($chunkSize, $backedup) {
+        $dates->each(function ($tableDateString) use ($chunkSize) {
             $tableDate = Carbon::parse($tableDateString);
             $tableSuffix = $tableDate->format('ym');
             // 生成备份表
-            $backupTableName = sprintf(
-                '%s_%s',
-                $this->getTable(),
-                $tableSuffix
-            );
-            if (! Schema::hasTable($backupTableName)) {
+            $backupTableName = sprintf('%s_%s', $this->getTable(), $tableSuffix);
+            if (!Schema::hasTable($backupTableName)) {
                 $this->duplicateTable(
                     $this->getTable(),
                     $backupTableName

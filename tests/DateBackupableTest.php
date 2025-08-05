@@ -19,11 +19,6 @@ class TestModel extends Model
     protected $table = 'test_models';
     protected $guarded = [];
 
-    public function getBackupTableName()
-    {
-        return $this->table;
-    }
-
     public function getTableDateFieldName()
     {
         return 'created_at';
@@ -66,17 +61,15 @@ class DateBackupableTest extends TestCase
         $this->assertDatabaseCount($backModel->getTable(), count: count($data));
     }
 
-
     /** @test */
     public function it_creates_backup_table_with_date_suffix()
     {
-        // Event::fake();
         $eventBackedUp = 0;
         Event::listen(ModelsBackuped::class, function (ModelsBackuped $event) use (&$eventBackedUp) {
             $eventBackedUp += $event->count;
         });
 
-        $backModel  = new TestModel();
+        $backModel = new TestModel();
         // 准备测试数据
         $backupDataCount = 10000;
         $tables = [];
@@ -108,7 +101,7 @@ class DateBackupableTest extends TestCase
         // 验证备份数据
         $this->assertDatabaseCount($backModel->getTable(), count: count($data));
         $totalBackedUp = 0;
-        foreach ($tables as  $table) {
+        foreach ($tables as $table) {
             $totalBackedUp += DB::table($table)->count();
         }
         // 验证备份数据
