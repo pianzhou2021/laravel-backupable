@@ -3,6 +3,7 @@
 namespace Pianzhou\Backupable\Console;
 
 use Pianzhou\Backupable\Backupable;
+use Pianzhou\Backupable\MonthlyMassBackupable;
 use Pianzhou\Backupable\MassBackupable;
 use Pianzhou\Backupable\ModelsBackuped;
 use Illuminate\Console\Command;

@@ -16,12 +16,17 @@
     "php": ">=8.0",
     "laravel/framework": "^9.0|^10.0|^11.0"
   },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5",
+    "orchestra/testbench": "^7.0"
+  },
   "suggest": {
   },
   "autoload": {
     "psr-4": {"Pianzhou\\Backupable\\": "src/"}
   },
   "autoload-dev": {
+    "psr-4": {"Pianzhou\\Backupable\\Tests\\": "tests/"}
   },
   "provide": {
   },
@@ -39,5 +44,8 @@
     "lock": false,
     "sort-packages": true,
     "platform-check": false
+  },
+  "scripts": {
+      "test": "XDEBUG_MODE=coverage vendor/bin/phpunit"
   }
 }
