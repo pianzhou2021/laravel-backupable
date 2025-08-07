@@ -159,7 +159,7 @@ class BackupCommand extends Command
     {
         $uses = class_uses_recursive($model);
 
-        return in_array(Backupable::class, $uses) || in_array(MassBackupable::class, $uses) || in_array(MonthlyMassBackupable::class, $uses);
+        return in_array(Backupable::class, $uses) || in_array(MassBackupable::class, $uses);
     }
 
     /**
