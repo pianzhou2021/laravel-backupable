@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
-use Pianzhou\Backupable\DateBackupable;
+use Pianzhou\Backupable\MonthlyMassBackupable;
 use Pianzhou\Backupable\ModelsBackuped;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 // 创建测试模型
 class TestModel extends Model
 {
-    use DateBackupable;
+    use MonthlyMassBackupable;
 
     protected $table = 'test_models';
     protected $guarded = [];
@@ -30,7 +30,7 @@ class TestModel extends Model
     }
 }
 
-class DateBackupableTest extends TestCase
+class MonthlyMassBackupableTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -71,7 +71,7 @@ class DateBackupableTest extends TestCase
 
         $backModel = new TestModel();
         // 准备测试数据
-        $backupDataCount = 10000;
+        $backupDataCount = 0;
         $tables = [];
         $data = [
             [
@@ -79,16 +79,21 @@ class DateBackupableTest extends TestCase
                 'created_at' => now(),
             ]
         ];
-        for ($i = 0; $i < $backupDataCount; $i++) {
-            $c = now()->subMonths(random_int(7, 12))->subSeconds($i);
-            $data[] = [
-                'name' => '测试数据' . $i,
-                'created_at' => $c,
-            ];
-            $tables[$backModel->getTable() . '_' . $c->format('ym')] = $backModel->getTable() . '_' . $c->format('ym');
-        };
-
-        TestModel::insert($data);
+        for ($m = 12; $m > 6; $m--) {
+            for ($i = 0; $i < 100000; $i++) {
+                $c = now()->subMonths($m)->subSeconds($i);
+                $data[] = [
+                    'name' => '测试数据' . $i,
+                    'created_at' => $c,
+                ];
+                $tables[$backModel->getTable() . '_' . $c->format('ym')] = $backModel->getTable() . '_' . $c->format('ym');
+                $backupDataCount++;
+            };
+            foreach (array_chunk($data, 2000) as   $chunkData) {
+                TestModel::insert($chunkData);
+            }
+            $data = [];
+        }
 
         // 执行备份
         $backupDate = Carbon::now()->subMonths(7)->format('ym');
@@ -99,13 +104,13 @@ class DateBackupableTest extends TestCase
         $backupTableName = $backModel->getTable() . '_' . $backupDate;
         $this->assertTrue(Schema::hasTable($backupTableName));
         // 验证备份数据
-        $this->assertDatabaseCount($backModel->getTable(), count: count($data));
+        $this->assertDatabaseCount($backModel->getTable(), count: $backupDataCount + 1);
         $totalBackedUp = 0;
         foreach ($tables as $table) {
             $totalBackedUp += DB::table($table)->count();
         }
         // 验证备份数据
-        $this->assertEquals(count($data) - 1, $totalBackedUp);
-        $this->assertEquals(count($data) - 1, $eventBackedUp);
+        $this->assertEquals($backupDataCount, $totalBackedUp);
+        $this->assertEquals($backupDataCount, $eventBackedUp);
     }
 }
